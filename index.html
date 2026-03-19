@@ -22,11 +22,10 @@
         .page { position: absolute; width: 100%; height: 100%; top: 0; left: 0; background: #1a1a1a; border: 2px solid #ff007f; border-radius: 10px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(255, 0, 127, 0.5); }
         .front { z-index: 2; transform: rotateY(0deg); }
         .back { transform: rotateY(180deg); background: #0d0d0d; }
-        .book-cover-img { width: 150px; height: 150px; }
         .heart-icon { font-size: 3em; color: #ff007f; }
 
         #heart-gallery { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .gallery-video { position: absolute; width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid #ff007f; box-shadow: 0 0 10px #ff007f; opacity: 0; transform: scale(0); animation: popIn 0.5s ease-out forwards; }
+        .gallery-video { position: absolute; width: 70px; height: 70px; object-fit: cover; border-radius: 10px; border: 2px solid #ff007f; box-shadow: 0 0 10px #ff007f; opacity: 0; transform: scale(0); animation: popIn 0.5s ease-out forwards; pointer-events: auto; }
         @keyframes popIn { to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
@@ -36,7 +35,6 @@
 
     <div id="container">
         <div id="countdown" class="fade-in">3</div>
-
         <div id="text-message" class="hidden"></div>
 
         <div id="book-container" class="hidden">
@@ -56,6 +54,7 @@
     <div id="heart-gallery" class="hidden"></div>
 
     <script>
+        // Эффект Матрицы
         const matrixBg = document.getElementById('matrix-bg');
         const chars = "ТыОченьКрасиваяМарина💖";
         const charArray = chars.split("");
@@ -96,7 +95,7 @@
             if (partIndex < messageParts.length) {
                 textMessageEl.innerText = messageParts[partIndex];
                 textMessageEl.classList.remove('fade-in');
-                void textMessageEl.offsetWidth;
+                void textMessageEl.offsetWidth; 
                 textMessageEl.classList.add('fade-in');
                 partIndex++;
                 setTimeout(showNextPart, 1000);
@@ -122,27 +121,33 @@
             heartGalleryEl.classList.remove('hidden');
             bookContainerEl.classList.add('hidden');
 
-            const numVideos = 15; 
-            for (let i = 1; i <= numVideos; i++) {
+            const totalSpots = 25;
+            const userVideos = 6;
+
+            for (let i = 1; i <= totalSpots; i++) {
                 setTimeout(() => {
                     const video = document.createElement('video');
-                    video.src = `videos/${i}.mp4`;
+                    
+                    let videoIndex = i % userVideos;
+                    if (videoIndex === 0) videoIndex = userVideos;
+                    
+                    video.src = `videos/${videoIndex}.mp4`; 
                     video.className = 'gallery-video';
                     video.autoplay = true;
                     video.loop = true;
                     video.muted = true;
                     video.setAttribute('playsinline', '');
 
-                    const t = (i / numVideos) * 2 * Math.PI;
+                    const t = (i / totalSpots) * 2 * Math.PI;
                     const x = 16 * Math.pow(Math.sin(t), 3);
                     const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
 
-                    const scale = 12;
-                    video.style.left = `calc(50% + ${x * scale}px - 40px)`;
-                    video.style.top = `calc(50% + ${y * scale}px - 40px)`;
+                    const scale = 14; 
+                    video.style.left = `calc(50% + ${x * scale}px - 35px)`; 
+                    video.style.top = `calc(50% + ${y * scale}px - 35px)`;
                     
                     heartGalleryEl.appendChild(video);
-                }, i * 150);
+                }, i * 150); 
             }
         }
     </script>
