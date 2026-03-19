@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Марины</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #000; color: #ff007f; font-family: 'Courier New', Courier, monospace; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        #matrix-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .matrix-char { position: absolute; color: rgba(255, 0, 127, 0.7); font-size: 20px; animation: fall linear infinite; }
+        @keyframes fall { to { transform: translateY(100vh); } }
+
+        #container { text-align: center; }
+        #countdown, #text-message { font-size: 4em; font-weight: bold; text-shadow: 0 0 10px #ff007f; }
+        .hidden { display: none; }
+        .fade-in { animation: fadeIn 1s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+
+        #book-container { position: relative; width: 300px; height: 400px; perspective: 1000px; cursor: pointer; transition: transform 0.5s; z-index: 10; }
+        #book { width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1s; position: relative; }
+        #book.open { transform: rotateY(-180deg); }
+        .page { position: absolute; width: 100%; height: 100%; top: 0; left: 0; background: #1a1a1a; border: 2px solid #ff007f; border-radius: 10px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; box-shadow: 0 0 20px rgba(255, 0, 127, 0.5); }
+        .front { z-index: 2; transform: rotateY(0deg); }
+        .back { transform: rotateY(180deg); background: #0d0d0d; }
+        .book-cover-img { width: 150px; height: 150px; }
+        .heart-icon { font-size: 3em; color: #ff007f; }
+
+        #heart-gallery { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .gallery-video { position: absolute; width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid #ff007f; box-shadow: 0 0 10px #ff007f; opacity: 0; transform: scale(0); animation: popIn 0.5s ease-out forwards; }
+        @keyframes popIn { to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <div id="matrix-bg"></div>
+
+    <div id="container">
+        <div id="countdown" class="fade-in">3</div>
+
+        <div id="text-message" class="hidden"></div>
+
+        <div id="book-container" class="hidden">
+            <div id="book">
+                <div class="page front">
+                    <span class="heart-icon">❤️</span>
+                    <div>Нажми</div>
+                </div>
+                <div class="page back">
+                    <div style="font-size: 1.5em; padding: 20px;">Марина! Будь счастлива!</div>
+                    <div class="heart-icon">💖</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="heart-gallery" class="hidden"></div>
+
+    <script>
+        const matrixBg = document.getElementById('matrix-bg');
+        const chars = "ТыОченьКрасиваяМарина💖";
+        const charArray = chars.split("");
+
+        function createMatrixChar() {
+            const char = document.createElement('span');
+            char.className = 'matrix-char';
+            char.innerText = charArray[Math.floor(Math.random() * charArray.length)];
+            char.style.left = Math.random() * 100 + 'vw';
+            char.style.animationDuration = Math.random() * 3 + 2 + 's';
+            matrixBg.appendChild(char);
+            setTimeout(() => char.remove(), 5000);
+        }
+        setInterval(createMatrixChar, 50);
+
+        const countdownEl = document.getElementById('countdown');
+        const textMessageEl = document.getElementById('text-message');
+        const bookContainerEl = document.getElementById('book-container');
+        const messageParts = ["Ты", "очень", "красивая", "Марина", "💖"];
+        let partIndex = 0;
+
+        function startSequence() {
+            let count = 3;
+            const timer = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.innerText = count;
+                } else {
+                    clearInterval(timer);
+                    countdownEl.classList.add('hidden');
+                    textMessageEl.classList.remove('hidden');
+                    showNextPart();
+                }
+            }, 1000);
+        }
+
+        function showNextPart() {
+            if (partIndex < messageParts.length) {
+                textMessageEl.innerText = messageParts[partIndex];
+                textMessageEl.classList.remove('fade-in');
+                void textMessageEl.offsetWidth;
+                textMessageEl.classList.add('fade-in');
+                partIndex++;
+                setTimeout(showNextPart, 1000);
+            } else {
+                textMessageEl.classList.add('hidden');
+                bookContainerEl.classList.remove('hidden');
+            }
+        }
+
+        window.onload = startSequence;
+
+        const bookEl = document.getElementById('book');
+        const heartGalleryEl = document.getElementById('heart-gallery');
+
+        bookContainerEl.addEventListener('click', () => {
+            bookEl.classList.toggle('open');
+            if (bookEl.classList.contains('open')) {
+                setTimeout(showHeartGallery, 1500); 
+            }
+        });
+
+        function showHeartGallery() {
+            heartGalleryEl.classList.remove('hidden');
+            bookContainerEl.classList.add('hidden');
+
+            const numVideos = 15; 
+            for (let i = 1; i <= numVideos; i++) {
+                setTimeout(() => {
+                    const video = document.createElement('video');
+                    video.src = `videos/${i}.mp4`;
+                    video.className = 'gallery-video';
+                    video.autoplay = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.setAttribute('playsinline', '');
+
+                    const t = (i / numVideos) * 2 * Math.PI;
+                    const x = 16 * Math.pow(Math.sin(t), 3);
+                    const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+
+                    const scale = 12;
+                    video.style.left = `calc(50% + ${x * scale}px - 40px)`;
+                    video.style.top = `calc(50% + ${y * scale}px - 40px)`;
+                    
+                    heartGalleryEl.appendChild(video);
+                }, i * 150);
+            }
+        }
+    </script>
+</body>
+</html>
