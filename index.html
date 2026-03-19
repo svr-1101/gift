@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для Марины ❤️</title>
+    <title>Для Марины</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Courier+New&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -42,18 +42,18 @@
         #book-container { position: relative; width: 320px; height: 450px; cursor: pointer; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 20; box-shadow: 0 0 50px rgba(255, 0, 127, 0.3); }
         #book-container:hover { transform: scale(1.05) rotateX(5deg); }
         
-        #book { width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative; } /* Книга открывается медленнее */
+        #book { width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
         #book.open { transform: rotateY(-180deg); }
         
         .page { position: absolute; width: 100%; height: 100%; top: 0; left: 0; border-radius: 15px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 2px solid var(--main-pink); box-shadow: inset 0 0 30px rgba(255, 0, 127, 0.3), var(--neon-glow); overflow: hidden; }
         
-        .front { z-index: 2; transform: rotateY(0deg); background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%); }
+        .front { z-index: 2; transform: rotateY(0deg); background: #000; }
         .back { transform: rotateY(180deg); background: linear-gradient(135deg, #0d0d0d 0%, #000 100%); padding: 30px; box-sizing: border-box; }
         
-        .book-cover-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('cover.jpg'); background-size: cover; background-position: center; opacity: 0.3; z-index: -1; }
+        /* Обложка с твоим фото на 100% яркости */
+        .book-cover-placeholder { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-image: url('cover.jpg'); background-size: cover; background-position: center; opacity: 1; z-index: 1; border-radius: 13px; }
 
-        .front-content { text-align: center; font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 3px; font-weight: bold; }
-        .heart-icon { font-size: 4em; color: var(--main-pink); text-shadow: var(--neon-glow); animation: heartBeat 2s infinite; } /* Пульсация медленнее */
+        .heart-icon { font-size: 4em; color: var(--main-pink); text-shadow: var(--neon-glow); animation: heartBeat 2s infinite; }
         @keyframes heartBeat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1.05); } 45% { transform: scale(1.2); } }
 
         .back-message { font-size: 1.8em; line-height: 1.4; text-shadow: var(--neon-glow); margin-bottom: 20px; }
@@ -82,21 +82,15 @@
 
     <div id="container">
         <div id="countdown">3</div>
-
         <div id="text-message" class="hidden"></div>
 
         <div id="book-container" class="hidden">
             <div id="book">
                 <div class="page front">
                     <div class="book-cover-placeholder"></div>
-                    <div class="front-content">
-                        <div class="heart-icon">💖</div>
-                        <div style="margin-top:20px;">ОТКРОЙ</div>
-                    </div>
                 </div>
                 <div class="page back">
                     <div class="back-message">Марина!<br>Пусть каждый твой день будет наполнен светом и счастьем!</div>
-                    <div class="heart-icon">💝</div>
                 </div>
             </div>
         </div>
@@ -107,7 +101,7 @@
     <script>
         const matrixBg = document.getElementById('matrix-bg');
         const bokehBg = document.getElementById('bokeh-bg');
-        const chars = "ТыОченьКрасиваяМарина💖";
+        const chars = "ТыОченьКрасиваяМарина";
         const charArray = chars.split("");
 
         function createMatrixChar() {
@@ -137,7 +131,7 @@
         const countdownEl = document.getElementById('countdown');
         const textMessageEl = document.getElementById('text-message');
         const bookContainerEl = document.getElementById('book-container');
-        const messageParts = ["Ты", "очень", "красивая", "Марина", "💖"];
+        const messageParts = ["Ты", "очень", "красивая", "Марина"];
         let partIndex = 0;
 
         function startSequence() {
@@ -156,7 +150,7 @@
                         showNextPart();
                     }, 500);
                 }
-            }, 1000);
+            }, 1000); 
         }
 
         function showNextPart() {
